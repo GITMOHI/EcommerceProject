@@ -10,41 +10,65 @@ shopZen is a comprehensive e-commerce platform that offers a seamless shopping e
 
 
 
-## Acknowledgements
-
- - [Awesome Readme Templates](https://awesomeopensource.com/project/elangosundar/awesome-README-templates)
- - [Awesome README](https://github.com/matiassingers/awesome-readme)
- - [How to write a Good readme](https://bulldogjob.com/news/449-how-to-write-a-good-readme-for-your-github-project)
+## Build with ❤️ and 
+React, Redux-toolkit, Node Js,Express Js,MongoDB,Mongoose
 
 
-## API Reference
+## Getting Started
+Follow the step by step installation procedure to install and run this on your machine
 
-#### Get all items
+### Prerequisites
+Make sure you have node installed in your device.
 
-```http
-  GET /api/items
+NodeJs: Install Nodejs from [here](https://nodejs.org/en/download/)
+
+### Installation Guide
+
+1.Getting the Repository
+
+#### Clone the Repo
+
+To clone the repository, use Git:
+
+```bash
+git clone https://github.com/GITMOHI/EcommerceProject.git 
+
 ```
+2.After installation or download go to the repository and open command line
 
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `api_key` | `string` | **Required**. Your API key |
+3.Install NPM packages for both client and server
+```bash 
+ npm install
 
-#### Get item
+ ```
+ 4.Setting up the environment (.env) file at root directory 
+ 
+ In, server-side .env should have the followings
 
-```http
-  GET /api/items/${id}
+```bash
+ FRONTEND_URL
+ GMAIL_USER
+ GMAIL_PASS
+
+ ```
+ In, client-side .env should have the followings,
+ ```bash
+ REACT_APP_API_URL
+ ```
+4.Run the project
+Go to your favourite code editor and run
+
+client-side,
+```bash
+ npm start 
+ ```
+
+ server-side,
+ ```bash
+   nodemon-index.NodeJs
 ```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id`      | `string` | **Required**. Id of item to fetch |
-
-#### add(num1, num2)
-
-Takes two numbers and returns the sum.
+You should find that the project is working!🔥
 
 
-## Appendix
 
-Any additional information goes here
 
