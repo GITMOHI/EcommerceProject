@@ -52,6 +52,9 @@ app.use(session({
   }
 }));
 
+app.set('trust proxy', 1); // Trust the first proxy
+
+
 // app.use(
 //   session({
 //     secret: "keyboard cat",
