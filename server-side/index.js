@@ -40,9 +40,9 @@ app.use(
     }),
     cookie: {
       maxAge: 2 * 60 * 60 * 1000 + 4 * 60 * 1000, // 2 hours and 4 minutes
-      secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
+      // secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
       httpOnly: true, // Prevents JavaScript access to the cookie
-      sameSite: 'strict' // Ensures cookies are sent only for same-origin requests
+      // sameSite: 'strict' // Ensures cookies are sent only for same-origin requests
     }
   })
 );
