@@ -77,6 +77,7 @@ exports.insertAll = async (req, res) => {
 exports.fetchAllProducts = async (req, res) => {
   try {
     console.log(req.query);
+    // console.log('fetching all products');
     let query = Products.find({});
     let totalDocsQuery = Products.find({});
 
