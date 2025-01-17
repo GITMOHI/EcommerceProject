@@ -39,7 +39,7 @@ export function fetchOrdersById(id){
     return new Promise(async(resolve)=>{
           
         console.log("Fetching",id);
-          const response = await fetch('http://localhost:4040/orders/'+id);
+          const response = await fetch(`${process.env.REACT_APP_API_URL}/orders/`+id);
 
           const data = await response.json();
           console.log(response);
@@ -53,7 +53,7 @@ export function fetchOrdersById(id){
 //update order...
 export function updateOrder(order){
     return new Promise(async(resolve)=>{
-        const response = await fetch('http://localhost:8080/orders/'+order.id,{
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/orders/`+order.id,{
             method:'PATCH',
             body: JSON.stringify(order),
             headers:{'content-Type': 'application/json'}

@@ -92,7 +92,7 @@ function MyProfile() {
 
       try {
         const response = await fetch(
-          `http://localhost:4040/users/upload-image/${loggedInUser?.id}`,
+          `${process.env.REACT_APP_API_URL}/users/upload-image/${loggedInUser?.id}`,
           {
             method: "PATCH",
             body: formData,

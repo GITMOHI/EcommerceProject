@@ -10,7 +10,7 @@ export function fetchAllProducts(filter) {
       //   queryStr += `${key}=${pagination[key]}&`;
       // }
 
-      const response = await fetch("http://localhost:4040/products?"+queryStr);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/products?`+queryStr);
       const data = await response.json();
       console.log(data);
       resolve({data});
@@ -23,7 +23,7 @@ export function fetchAllProducts(filter) {
   export function fetchProductById(id) {
     return new Promise(async(resolve) =>{
   
-      const response = await fetch('http://localhost:4040/products/'+id);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/products/`+id);
       const data = await response.json();
       resolve({data})
   
@@ -34,7 +34,7 @@ export function fetchAllProducts(filter) {
   export function fetchCategories() {
     return new Promise(async(resolve) =>{
   
-      const response = await fetch('http://localhost:4040/categories');
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/categories`);
       const data = await response.json();
       resolve({data})
   
@@ -45,7 +45,7 @@ export function fetchAllProducts(filter) {
   export function fetchBrands() {
     return new Promise(async(resolve) =>{
   
-      const response = await fetch('http://localhost:4040/brands');
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/brands`);
       const data = await response.json();
       resolve({data})
   
@@ -56,7 +56,7 @@ export function fetchAllProducts(filter) {
   export function fetchNewArrivals() {
     return new Promise(async(resolve) =>{
   
-      const response = await fetch('http://localhost:4040/products/new_arrivals');
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/products/new_arrivals`);
       const data = await response.json();
       resolve({data})
   

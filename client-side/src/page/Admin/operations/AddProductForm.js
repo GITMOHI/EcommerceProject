@@ -7,9 +7,8 @@ const AddProductForm = () => {
   const [availableCategories, setAvailableCategories] = useState([]);
   const [loading, setLoading] = useState(false);
   const [formErrors, setFormErrors] = useState({});
-  
+
   useEffect(() => {
-    // Fetch brands
     const fetchBrands = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/brands`);
@@ -28,7 +27,6 @@ const AddProductForm = () => {
   }, []);
 
   useEffect(() => {
-    // Fetch categories
     const fetchCategories = async () => {
       try {
         const response = await fetch(`${process.env.REACT_APP_API_URL}/categories`);
@@ -56,6 +54,7 @@ const AddProductForm = () => {
     category: "",
     thumbnail: null,
     images: [],
+    highlights: "", // New field for highlights
   });
 
   const handleChange = (e) => {
@@ -65,7 +64,7 @@ const AddProductForm = () => {
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file && file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024) {
+    if (file && file.type.startsWith("image/")) {
       setFormData({ ...formData, thumbnail: file });
       toast.success("Thumbnail selected successfully.");
     } else {
@@ -75,7 +74,7 @@ const AddProductForm = () => {
 
   const handleMultipleImagesChange = (e) => {
     const files = Array.from(e.target.files).filter(
-      (file) => file.type.startsWith("image/") && file.size <= 5 * 1024 * 1024
+      (file) => file.type.startsWith("image/")
     );
     setFormData({ ...formData, images: [...formData.images, ...files] });
     toast.success(`${files.length} image(s) selected successfully.`);
@@ -85,9 +84,8 @@ const AddProductForm = () => {
     e.preventDefault();
     setLoading(true);
 
-    // Validation logic
     const errors = {};
-    ["title", "description", "price", "stockQuantity", "brand", "category"].forEach((field) => {
+    ["title", "description", "price", "stockQuantity", "brand", "category", "highlights"].forEach((field) => {
       if (!formData[field]) errors[field] = `${field.charAt(0).toUpperCase() + field.slice(1)} is required.`;
     });
     if (!formData.thumbnail) errors.thumbnail = "Thumbnail image is required.";
@@ -99,7 +97,6 @@ const AddProductForm = () => {
       return;
     }
 
-    // Form submission logic
     const submissionData = new FormData();
     Object.entries(formData).forEach(([key, value]) => {
       if (key === "images") value.forEach((image) => submissionData.append("images", image));
@@ -110,6 +107,7 @@ const AddProductForm = () => {
       const response = await fetch(`${process.env.REACT_APP_API_URL}/products`, {
         method: "POST",
         body: submissionData,
+        credentials: "include",
       });
       if (response.ok) {
         toast.success("Product added successfully!");
@@ -123,6 +121,7 @@ const AddProductForm = () => {
           category: "",
           thumbnail: null,
           images: [],
+          highlights: "",
         });
       } else {
         toast.error("Failed to add product.");
@@ -139,7 +138,6 @@ const AddProductForm = () => {
       <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center text-red-500">Add New Product</h2>
 
       <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Form Fields */}
         {[
           { name: "title", label: "Title", type: "text" },
           { name: "description", label: "Description", type: "textarea" },
@@ -168,7 +166,17 @@ const AddProductForm = () => {
           </div>
         ))}
 
-        {/* Brand & Category */}
+        <div className="col-span-1 md:col-span-2">
+          <label className="block font-medium mb-1">Highlights</label>
+          <textarea
+            name="highlights"
+            value={formData.highlights}
+            onChange={handleChange}
+            className="w-full p-2 border rounded focus:ring-2 focus:ring-red-500"
+          />
+          {formErrors.highlights && <p className="text-red-500 text-sm">{formErrors.highlights}</p>}
+        </div>
+
         {[
           { name: "brand", label: "Brand", options: availableBrands },
           { name: "category", label: "Category", options: availableCategories },
@@ -192,7 +200,6 @@ const AddProductForm = () => {
           </div>
         ))}
 
-        {/* Thumbnail & Additional Images */}
         {[
           { label: "Thumbnail Image", handler: handleFileChange, name: "thumbnail" },
           { label: "Additional Images", handler: handleMultipleImagesChange, name: "images", multiple: true },
@@ -210,7 +217,6 @@ const AddProductForm = () => {
           </div>
         ))}
 
-        {/* Submit Button */}
         <div className="col-span-1 md:col-span-2 flex justify-center">
           <button
             type="submit"

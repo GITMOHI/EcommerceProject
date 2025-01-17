@@ -1,15 +1,44 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { FaArrowLeft, FaArrowRight, FaSearch } from "react-icons/fa";
 
+const ConfirmationModal = ({ isOpen, onClose, onConfirm, productId }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+        <h2 className="text-xl font-semibold text-gray-800 mb-4">Are you sure?</h2>
+        <p className="text-gray-600">Do you really want to delete this product? This process cannot be undone.</p>
+        <div className="mt-6 flex justify-end space-x-4">
+          <button
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={() => onConfirm(productId)}
+            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-500"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const ProductListWithActions = () => {
   const [products, setProducts] = useState([]);
-  const [filteredProducts, setFilteredProducts] = useState([]); // For search results
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [productsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProductId, setSelectedProductId] = useState(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -19,7 +48,7 @@ const ProductListWithActions = () => {
         if (response.ok) {
           const data = await response.json();
           setProducts(data);
-          setFilteredProducts(data); // Initialize filtered products with all products
+          setFilteredProducts(data);
         } else {
           toast.error("Failed to fetch products.");
         }
@@ -35,11 +64,15 @@ const ProductListWithActions = () => {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
-
+    const token = localStorage.getItem('token');
     try {
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/products/${id}`, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/products/delete/${id}`, {
         method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Authorization": `Bearer ${token}`,
+          "Content-Type": "application/json"
+        }
       });
 
       if (response.ok) {
@@ -55,10 +88,25 @@ const ProductListWithActions = () => {
     }
   };
 
+  const openModal = (productId) => {
+    setSelectedProductId(productId);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedProductId(null);
+  };
+
+  const confirmDelete = (id) => {
+    handleDelete(id);
+    closeModal();
+  };
+
   const handleSearch = (query) => {
     setSearchQuery(query);
     if (!query) {
-      setFilteredProducts(products); // If search is cleared, show all products
+      setFilteredProducts(products);
     } else {
       const filtered = products.filter(
         (product) =>
@@ -114,17 +162,17 @@ const ProductListWithActions = () => {
                     <td className="py-2 px-4">{product.id}</td>
                     <td className="py-2 px-4">{product.title}</td>
                     <td className="py-2 px-4">${product.price}</td>
-                    <td className="py-2 px-4">{product.stockQuantity}</td>
+                    <td className="py-2 px-4">{product.stock}</td>
                     <td className="py-2 px-4">
                       <div className="flex gap-2 justify-center flex-wrap">
                         <Link
-                          to={`/admin/products/edit/${product.id}`}
+                          to={`/admin/operations/edit-product/${product.id}`}
                           className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-400 transition"
                         >
                           Edit
                         </Link>
                         <button
-                          onClick={() => handleDelete(product.id)}
+                          onClick={() => openModal(product.id)}
                           className="bg-red-600 text-white px-4 py-2 rounded-lg shadow hover:bg-red-500 transition"
                         >
                           Delete
@@ -137,7 +185,6 @@ const ProductListWithActions = () => {
             </table>
           </div>
 
-          {/* Pagination Controls */}
           <div className="mt-6 flex justify-between items-center text-sm flex-wrap">
             <button
               onClick={() => setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))}
@@ -158,7 +205,6 @@ const ProductListWithActions = () => {
             </button>
           </div>
 
-          {/* Pagination Number Buttons */}
           <div className="mt-4 flex justify-center gap-2 flex-wrap">
             {[...Array(totalPages).keys()].map((num) => (
               <button
@@ -176,6 +222,13 @@ const ProductListWithActions = () => {
           </div>
         </div>
       )}
+
+      <ConfirmationModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onConfirm={confirmDelete}
+        productId={selectedProductId}
+      />
     </div>
   );
 };

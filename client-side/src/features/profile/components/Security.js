@@ -30,7 +30,7 @@ function Security() {
   const changePassword = async (dataPass) => {
     try {
       const response = await fetch(
-        `http://localhost:4040/auth/change_password`,
+        `${process.env.REACT_APP_API_URL}/auth/change_password`,
         {
           method: "POST",
           headers: {

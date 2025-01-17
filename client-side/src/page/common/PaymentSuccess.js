@@ -1,17 +1,49 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { resetCartAsync } from '../../features/cart/cartSlice';
+import { fetchItemsByUserIdAsync, resetCartAsync, selectCartItems } from '../../features/cart/cartSlice';
 import { selectLoggedInUser } from '../../features/Auth/authSlice';
 
 function PaymentSuccess() {
-
-    const {tranId} = useParams();
-    const loggedInUser = useSelector(selectLoggedInUser);
+    const { tranId } = useParams();  // Extract transaction ID from URL parameters
+    const loggedInUser = useSelector(selectLoggedInUser);  // Get logged-in user from Redux store
     const dispatch = useDispatch();
-    useEffect(()=>{
-      dispatch(resetCartAsync(loggedInUser?.id))
-    },[dispatch])
+    const cartItems = useSelector(selectCartItems);  // Get cart items from Redux store
+
+    // useEffect to send tranId to the backend
+    useEffect(() => {
+        const sendTransactionData = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/orders/decrease_stock`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ tranId }),  // Send only tranId to backend
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to send transaction data');
+                }
+
+                console.log('Transaction data sent successfully');
+            } catch (error) {
+                console.error('Error sending transaction data:', error);
+            }
+        };
+
+        if (tranId) {
+            sendTransactionData();  // Trigger the API call to send tranId
+        }
+    }, [tranId]);  // Trigger when tranId is available
+
+    // useEffect to reset the cart
+    useEffect(() => {
+        if (loggedInUser?.id) {
+            dispatch(resetCartAsync(loggedInUser?.id));  // Reset the cart for the logged-in user
+        }
+    }, [loggedInUser?.id, dispatch]);  // Trigger when loggedInUser's ID is available
+
     return (
         <div className="flex flex-col items-center justify-center h-screen text-center bg-gray-100 p-4">
             <div className="mb-6">

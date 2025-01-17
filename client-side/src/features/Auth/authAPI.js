@@ -1,7 +1,7 @@
 //register user...
 export async function signupUser(userInfo) {
   try {
-    const response = await fetch("http://localhost:4040/users/signup", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/signup`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,7 +27,7 @@ export async function signupUser(userInfo) {
 export async function changePassword(dataPass) {
   
   try {
-    const response = await fetch(`http://localhost:4040/auth/change_password`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/change_password`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -57,7 +57,7 @@ export async function changePassword(dataPass) {
 export async function updateUser(userInfo, userId) {
   try {
     console.log(userId);
-    const response = await fetch(`http://localhost:4040/users/${userId}`, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/${userId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -80,7 +80,7 @@ export async function updateUser(userInfo, userId) {
 // loginUser.js
 export async function loginUser(userInfo) {
   try {
-    const response = await fetch("http://localhost:4040/auth/login", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -106,7 +106,7 @@ export async function loginUser(userInfo) {
 //fetch LoggedIn User...
 export function fetchLoggedInUser() {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:4040/auth/loggeduser", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/loggeduser`, {
       method: "GET",
       credentials: "include",
     });
@@ -120,7 +120,7 @@ export function fetchLoggedInUser() {
 //fecth loggedInUsers  activity
 export function fetchLoggedInUserActivity(){
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:4040/auth/loggeduserActivity", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/loggeduserActivity`, {
       method: "GET",
       credentials: "include",
     });
@@ -134,7 +134,7 @@ export function fetchLoggedInUserActivity(){
 //logout user...
 export function logoutUser() {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:4040/auth/logout", {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -150,7 +150,7 @@ export function logoutUser() {
 //add address for user....
 export function addAddress(addressData,userId) {
   return new Promise(async (resolve) => {
-    const response = await fetch("http://localhost:4040/users/add-address/"+userId, {
+    const response = await fetch(`${process.env.REACT_APP_API_URL}/users/add-address/`+userId, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -167,7 +167,7 @@ export function addAddress(addressData,userId) {
 // //delete address for user....
 // export function deleteAddress(addressData,userId) {
 //   return new Promise(async (resolve) => {
-//     const response = await fetch("http://localhost:4040/users/add-address/"+userId, {
+//     const response = await fetch("${process.env.REACT_APP_API_URL}/users/add-address/"+userId, {
 //       method: "POST",
 //       headers: {
 //         "Content-Type": "application/json",
@@ -187,7 +187,7 @@ export function addAddress(addressData,userId) {
   // login Admin....js
   export async function loginAdmin(userInfo) {
     try {
-      const response = await fetch("http://localhost:4040/admin/admin-login", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/admin/admin-login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

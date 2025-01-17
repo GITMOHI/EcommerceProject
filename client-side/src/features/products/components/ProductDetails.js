@@ -9,7 +9,7 @@ import {
   fetchLoggedInUserAsync,
   selectLoggedInUser,
 } from "../../Auth/authSlice";
-import { addToCartAsync } from "../../cart/cartSlice";
+import { addToCartAsync, fetchItemsByUserIdAsync, selectCartItems } from "../../cart/cartSlice";
 
 const reviews = { href: "#", average: 4.43, totalCount: 117 };
 
@@ -23,10 +23,15 @@ export default function ProductDetails() {
   useEffect(() => {
     dispatch(fetchProductByIdAsync(id));
     dispatch(fetchLoggedInUserAsync());
+    dispatch(fetchItemsByUserIdAsync()); 
   }, [dispatch, id]);
   const user = useSelector(selectLoggedInUser);
 
   const product = useSelector(selectSingleProduct);
+  const cartItems = useSelector(selectCartItems);
+  console.log(cartItems);  // Log to see the structure
+
+
   console.log(product);
   const {
     title,
@@ -43,20 +48,71 @@ export default function ProductDetails() {
 
   const navigate = useNavigate();
 
-  // functions...
-  const handleCart = (e) => {
-    e.preventDefault();
-    console.log("CLicked!!!!!!!", user);
-    if (!user?.id) {
-      console.log("here in..", user);
-      navigate("/login");
-    } else {
-      const new_item = { product: product.id, quantity: 1, user: user?.id };
-      delete new_item["id"];
-      dispatch(addToCartAsync(new_item));
-    }
-  };
+  // // functions...
+  // const handleCart = (e) => {
+  //   e.preventDefault();
+    
+  //   if (!user?.id) {
+  //     navigate("/login");
+  //   } else {
+  //     // Check if the product is already in the cart
+  //     const existingItem = cartItems.find(item => item.product.id === product.id);
+  //     console.log(existingItem);
+  //     if (!existingItem) {
+  //       dispatch(addToCartAsync({ userId: user.id, productId: product.id }));
+  //     } 
+  //   }
+  // };
 
+    // // functions...
+    // const handleCart = (e) => {
+    //   e.preventDefault();
+    //   console.log("CLicked!!!!!!!", user);
+    //   if (!user?.id) {
+    //     console.log("here in..", user);
+    //     navigate("/login");
+    //   } else {
+    //     const existingItem = cartItems.find(item => item.product.id === product.id);
+    //     if(!existingItem){
+    //       const new_item = { product: product.id, quantity: 1, user: user?.id };
+    //       delete new_item["id"];
+    //       dispatch(addToCartAsync(new_item));
+    //     }
+    //     // const new_item = { product: product.id, quantity: 1, user: user?.id };
+    //     // delete new_item["id"];
+    //     // dispatch(addToCartAsync(new_item));
+    //   }
+    // }; 
+
+    const handleCart = (e) => {
+      e.preventDefault();
+      console.log("Clicked!!!!!!!", user);
+      
+      // Redirect to login if user is not authenticated
+      if (!user?.id) {
+        // console.log("here in..", user);
+        navigate("/login");
+      } else {
+        // Check if the product already exists in the cart
+        console.log('new --> ',product);
+        console.log('cartItems --> ',cartItems);
+        const existingItem = cartItems.find(item => 
+          item.product === product.id || (item.product.id && item.product.id === product.id)
+      );
+      
+        console.log(existingItem);
+        // If the item does not exist, add it to the cart
+        if (!existingItem) {
+          const new_item = { product: product.id, quantity: 1, user: user?.id };
+          delete new_item["id"];
+          console.log('Adding item to cart.........',new_item);
+          console.log(new_item);
+          dispatch(addToCartAsync(new_item));
+        }
+      }
+    };
+
+    
   return (
     <div className="bg-white mt-10">
       <div className="pt-6">
@@ -167,14 +223,8 @@ export default function ProductDetails() {
               <h3 className="text-sm font-medium text-gray-900">Highlights</h3>
 
               <div className="mt-4">
-                {product.highlights && (
-                  <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
-                    {product.highlights.map((highlight) => (
-                      <li key={highlight} className="text-gray-400">
-                        <span className="text-gray-600">{highlight}</span>
-                      </li>
-                    ))}
-                  </ul>
+                {product?.highlights && (
+                  <p className="text-sm text-gray-600">{product?.highlights}</p>
                 )}
               </div>
             </div>

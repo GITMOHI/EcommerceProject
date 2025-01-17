@@ -19,6 +19,9 @@ import { Link } from "react-router-dom";
 import ProductsCart from "./common/ProductsCart";
 
 import { motion } from "framer-motion";
+import ProductCart from "../features/products/components/ProductCart";
+import Testimonials from "./Testimonials";
+import SpecialOffers from "./SpecialOffers";
 
 function HomePage() {
   const dispatch = useDispatch();
@@ -56,7 +59,6 @@ function HomePage() {
 
   return (
     <div className="container mx-auto bg-base-100">
-
       {/* banner */}
       <div className="flex md:flex-row flex-col sm:items-start md:items-start md:justify-stretch md:gap-12  pt-20">
         <div
@@ -88,10 +90,13 @@ function HomePage() {
               and personalized experiences every time you visit.
             </p>
           </div>
-          <button className="btn flex flex-row gap-2 btn-wide hover:bg-[#b43939] bg-[#db4444] text-white font-bold text-lg mt-16">
-            <MdOutlineShoppingCart className="font-bold text-2xl"></MdOutlineShoppingCart>
-            Shop Now!
-          </button>
+
+          <Link to="/products">
+            <button className="btn flex flex-row gap-2 btn-wide hover:bg-[#b43939] bg-[#db4444] text-white font-bold text-lg mt-16">
+              <MdOutlineShoppingCart className="font-bold text-2xl"></MdOutlineShoppingCart>
+              Shop Now!
+            </button>
+          </Link>
         </div>
 
         <div
@@ -116,10 +121,6 @@ function HomePage() {
         </div>
       </div>
 
-
-
-
-
       {/* cateogory... */}
       <div className="mt-16 border-t py-11">
         <div className="mt-10">
@@ -141,13 +142,13 @@ function HomePage() {
             <motion.div
               className="flex gap-4"
               animate={{
-                x: ["0%", "-100%"], 
+                x: ["0%", "-100%"],
               }}
               transition={{
-                repeat: Infinity, 
-                repeatType: "loop", 
-                duration: 20, 
-                ease: "linear", 
+                repeat: Infinity,
+                repeatType: "loop",
+                duration: 20,
+                ease: "linear",
               }}
             >
               {categories.map((category) => (
@@ -170,10 +171,6 @@ function HomePage() {
               ))}
             </motion.div>
           </div>
-
-
-
-
 
           {/* banner2.. */}
           <div
@@ -209,11 +206,6 @@ function HomePage() {
         </div>
       </div>
 
-
-
-
-
-
       {/* our products.. */}
       <div className="mt-20 ">
         <div className="flex flex-row gap-2 font-semibold items-center  ">
@@ -231,7 +223,7 @@ function HomePage() {
 
         <div className="mt-16 grid grid-cols-5  gap-5">
           {products?.slice(0, 10)?.map((product) => (
-            <ProductsCart key={product.id} product={product}></ProductsCart>
+            <ProductCart key={product.id} product={product}></ProductCart>
           ))}
         </div>
 
@@ -245,15 +237,16 @@ function HomePage() {
         </div>
       </div>
 
-      {/* new Arrivals */}
+
+      {/* new arrivals */}
+
       <div className="mt-20">
-        <div className="flex flex-row gap-2 font-semibold items-center  ">
+        <div className="flex flex-row gap-2 font-semibold items-center">
           <div className="w-4 h-8 bg-[#db4444] rounded-l-md"></div>
           <p className="text-[#db4444] font-bold">Featured</p>
         </div>
         <h1 className="mt-3 font-semibold text-3xl">New Arrival</h1>
 
-        {/* New Arrivals Grid */}
         <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {new_arrivals?.slice(0, 4)?.map((product, index) => (
             <div
@@ -269,17 +262,32 @@ function HomePage() {
               }`}
             >
               <Link to={`/products/${product.id}`}>
-                {" "}
                 <img
                   src={product.thumbnail}
                   alt={product.title}
-                  className="border-2 shadow-2xl  w-full h-full object-cover"
+                  className="border-2 shadow-2xl w-full h-full object-cover transform transition-transform duration-300 hover:scale-105"
                 />
               </Link>
             </div>
           ))}
         </div>
+
+        
       </div>
+
+
+      {/* customer testimonials */}
+      <div>
+        <Testimonials></Testimonials>
+      </div>
+
+
+      {/* special offers */}
+      <div>
+        <SpecialOffers></SpecialOffers>
+      </div>
+
+
     </div>
   );
 }

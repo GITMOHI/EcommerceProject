@@ -83,6 +83,8 @@ function CheckoutPage() {
     );
   };
   const handleOrder = (e) => {
+
+    console.log("called....000000000000000000000000");
     const order = {
       items,
       totalAmount,
@@ -96,7 +98,7 @@ function CheckoutPage() {
 
 
    //****payement ******///
-   fetch("http://localhost:4040/orders", {
+   fetch(`${process.env.REACT_APP_API_URL}/orders`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

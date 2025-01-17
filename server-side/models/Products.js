@@ -36,7 +36,7 @@ const productSchema = new Schema({
     },
     brand:{
         type:String,
-        required:true
+        required:true 
     },
     category:{
         type:String,
@@ -58,6 +58,10 @@ const productSchema = new Schema({
     bestSeller:{
         type:Boolean,
         default:false
+    },
+    highlights:{
+        type:String,
+        default:"Most Highlighted features of your product"
     }
 
 

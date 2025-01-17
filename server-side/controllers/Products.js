@@ -2,6 +2,7 @@ const Products = require("../models/Products");
 const cloudinary = require("../utils/cloudinary");
 const Brand = require("../models/Brands"); // Assuming you have a Brand model
 const Category = require("../models/Categories"); // Assuming you have a Category model
+const Orders = require("../models/Orders");
 
 exports.createProduct = async (req, res) => {
   try {
@@ -13,8 +14,9 @@ exports.createProduct = async (req, res) => {
       stockQuantity,
       brand: brandId,
       category: categoryId,
+      highlights: highlights
     } = req.body;
-
+    console.log('creating...')
     console.log(req.body);
 
     // Fetch brand label using the brandId
@@ -42,11 +44,12 @@ exports.createProduct = async (req, res) => {
       description,
       price,
       discountPercentage,
-      stockQuantity,
+      stock:stockQuantity,
       brand:  bran.label,
       category:  cat.label,
       thumbnail: thumbnailResult.secure_url,
       images: additionalImages,
+      highlights: highlights
     });
     console.log(product);
     const savedProduct = await product.save();
@@ -135,6 +138,7 @@ exports.fetchBestSellers = async (req, res) => {
 };
 
 exports.fetchProductById = async (req, res) => {
+  console.log(`Fetching..${req.params.id}`);
   try {
     const product = await Products.findById(req.params.id);
     res.status(200).json(product);
@@ -162,13 +166,96 @@ exports.fetchNewArrivals = async (req, res) => {
 
 exports.updateProduct = async (req, res) => {
   const { id } = req.params;
-
+  console.log(`Update Product ${id}`);
   try {
-    const product = await Products.findByIdAndUpdate(id, req.body, {
-      new: true,
+    const data = req.body;
+    const updatedProductData = {
+      title: data.title,
+      description: data.description,
+      price: data.price,
+      discountPercentage: data.discountPercentage || "",
+      stock: data.stockQuantity, 
+      brand: data.brand,
+      category: data.category,
+      highlights: data.highlights,
+      thumbnail: data.thumbnail,
+      images: data.images || [],
+    };
+
+    // Update the product by ID
+    const product = await Products.findByIdAndUpdate(id, updatedProductData, {
+      new: true, 
+      runValidators: true,
     });
     res.status(200).json(product);
   } catch (err) {
     res.status(404).send({ message: err.message });
+  }
+};
+
+
+exports.deleteProduct = async (req, res) => {
+  const { id } = req.params; // Get the product ID from the request parameters
+  console.log(`Deleting product ${id}`);
+  try {
+    // Find the product by ID and delete it
+    const product = await Products.findByIdAndDelete(id);
+
+    if (!product) {
+      return res.status(404).json({ message: "Product not found." });
+    }
+
+    res.status(200).json({ message: "Product deleted successfully.", product });
+  } catch (error) {
+    console.error("Error deleting product:", error);
+    res.status(500).json({ message: "An error occurred while deleting the product.", error });
+  }
+};
+
+
+
+exports.searchItem = async (req, res) => {
+  const { q } = req.query;
+  console.log(`Searching ${q}`);
+  if (!q) {
+    return res.status(400).json({ message: 'Query parameter "q" is required' });
+  }
+
+  try {
+    // Search in category, title, and brand fields (case insensitive)
+    const searchResults = await Products.find({
+      $or: [
+        { category: { $regex: q, $options: 'i' } },
+        { title: { $regex: q, $options: 'i' } },
+        { brand: { $regex: q, $options: 'i' } }
+      ]
+    });
+
+    res.status(200).json(searchResults);
+  } catch (error) {
+    console.error('Error searching items:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
+
+exports.pendingOrders = async (req, res) => {
+  console.log('Fetching pending orders');
+  try {
+    const pendingOrders = await Orders.find({ status: 'pending' }).populate('user');
+    res.status(200).json(pendingOrders);
+  } catch (err) {
+    console.error('Error fetching pending orders:', err);
+    res.status(500).json({ message: 'Failed to fetch pending orders' });
+  }
+};
+
+exports.receivedOrders = async (req, res) => {
+  console.log('Fetching received orders');
+  try {
+    const receivedOrders = await Orders.find({ status: 'received' }).populate('user');
+    res.status(200).json(receivedOrders);
+  } catch (err) {
+    console.error('Error fetching received orders:', err);
+    res.status(500).json({ message: 'Failed to fetch received orders' });
   }
 };

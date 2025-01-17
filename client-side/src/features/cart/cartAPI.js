@@ -1,7 +1,7 @@
 export function addToCart(item) {
     return new Promise(async (resolve) => {
       console.log("item = ", item);
-      const response = await fetch("http://localhost:4040/cart", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/cart`, {
         method: "POST",
         body: JSON.stringify(item),
         headers: { "content-type": "application/json" },
@@ -16,7 +16,7 @@ export function addToCart(item) {
   export function fetchItemsByUserId(userId) {
     return new Promise(async (resolve) => {
       console.log("userId = ", userId);
-      const response = await fetch("http://localhost:4040/cart/" + userId);
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/cart/` + userId);
       const data = await response.json();
       console.log("users cart", data);
       resolve({ data });
@@ -25,7 +25,7 @@ export function addToCart(item) {
   
   export function updateItem(update) {
     return new Promise(async (resolve) => {
-      const response = await fetch("http://localhost:4040/cart/" + update.id, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/cart/` + update.id, {
         method: "PATCH",
         body: JSON.stringify(update),
         headers: { "content-type": "application/json" },
@@ -38,7 +38,7 @@ export function addToCart(item) {
   //deleting single item from cart...
   export function deleteItemFromCart(ItemId) {
     return new Promise(async (resolve) => {
-      const response = await fetch("http://localhost:4040/cart/" + ItemId, {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/cart/` + ItemId, {
         method: "DELETE",
         headers: { "content-type": "application/json" },
       });

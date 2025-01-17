@@ -23,7 +23,7 @@ const ForgotPassword = () => {
     setIsLoading(true);  // Start loading state
   
     try {
-      const response = await fetch('http://localhost:4040/auth/forgot-password', {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

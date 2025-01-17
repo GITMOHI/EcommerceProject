@@ -48,7 +48,7 @@ const DashboardPage = () => {
 
   // Placeholder data; replace with actual data fetching logic
   const data = {
-    activeUsers: 200,
+    activeUsers: 10,
   };
 
 

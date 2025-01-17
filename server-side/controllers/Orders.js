@@ -10,6 +10,54 @@ const store_passwd = 'test668521c1c1916@ssl';
 const is_live = false; // true for live, false for sandbox
 
 
+
+exports.decreaseStock = async (req, res) => {
+    const { tranId } = req.body;  // Extract transaction ID from the request body
+
+    try {
+        console.log("Request body:", req.body);
+        // Find the order using tranId
+        const order = await Orders.findOne({ tranjectionId: tranId });
+
+        if (!order) {
+            return res.status(404).send(`Order with transaction ID ${tranId} not found`);
+        }
+
+        // Loop through each item in the order and decrease stock
+        for (const item of order.items) {
+            const productId = item.product.id;  // Assuming item has a 'product' field with 'id'
+            const quantityToDecrease = item.quantity;
+
+            // Find the product by its ID
+            const product = await Products.findById(productId);
+
+            if (!product) {
+                return res.status(404).send(`Product with ID ${productId} not found`);
+            }
+
+            // Check if there's enough stock before decreasing
+            if (product.stock < quantityToDecrease) {
+                return res.status(400).send(`Not enough stock for product: ${product.title}`);
+            }
+
+            // Decrease the stock by the ordered quantity
+            product.stock -= quantityToDecrease;
+
+            // Save the updated product stock
+            await product.save();
+
+            console.log(`Stock decreased for product ${product.title}, new stock: ${product.stock}`);
+        }
+
+        res.status(200).send('Stock decreased successfully for all items.');
+
+    } catch (err) {
+        console.error('Error decreasing stock:', err);
+        res.status(500).send('Internal server error');
+    }
+};
+
+
 exports.createOrder = async (req, res) => {
     try {
         const { items,totalAmount,total_Item, status, user, selectedAddress } = req.body;
@@ -108,3 +156,22 @@ exports.handleFailure = async(req, res)=>{
         res.redirect(`http://localhost:3000/payment/failed/${tranId}`)
     }
 }
+
+exports.setStatusReceived = async (req, res) => {
+    const { id } = req.params;
+    console.log('.......', id);
+
+    try {
+        const result = await Orders.updateOne({ _id: id }, { $set: { status: 'received' } });
+        console.log('...', result);
+
+        if (result.modifiedCount === 1) {
+            res.status(200).json({ message: 'Order status updated to received.' });
+        } else {
+            res.status(404).json({ message: 'Order not found or already updated.' });
+        }
+    } catch (error) {
+        console.error('Error updating order status:', error);
+        res.status(500).json({ message: 'An error occurred while updating the order status.' });
+    }
+};

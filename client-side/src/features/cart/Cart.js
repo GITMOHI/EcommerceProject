@@ -71,13 +71,21 @@ export function Cart() {
   const handleQuantity = (itemId, increment) => {
     setQuantities(prevQuantities => {
       const newQuantities = { ...prevQuantities };
-      newQuantities[itemId] = (newQuantities[itemId] || 0) + increment;
-      if (newQuantities[itemId] < 1) {
-        newQuantities[itemId] = 1;
+      const item = items.find(item => item.id === itemId);
+  
+      if (item) {
+        const newQuantity = (newQuantities[itemId] || 0) + increment;
+        if (newQuantity >= 1 && newQuantity <= item.product.stock) {
+          newQuantities[itemId] = newQuantity;
+        } else if (newQuantity < 1) {
+          newQuantities[itemId] = 1;
+        }
       }
+  
       return newQuantities;
     });
   };
+  
 
   const handleRemove = (itemId) => {
     dispatch(deleteItemFromCartAsync(itemId));

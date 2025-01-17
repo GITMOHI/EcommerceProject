@@ -1,5 +1,5 @@
 const express = require('express');
-const { createProduct, insertAll, fetchAllProducts, fetchProductById, fetchBestSellers, fetchNewArrivals } = require('../controllers/Products');
+const { createProduct, insertAll, fetchAllProducts, fetchProductById, fetchBestSellers, fetchNewArrivals, updateProduct, deleteProduct, searchItem } = require('../controllers/Products');
 const { isAdmin } = require('../controllers/Admin/Auth');
 const multer = require('../middlewares/multer.js');
 
@@ -13,7 +13,10 @@ router.post('/',isAdmin,multer.fields([
       .get('/',fetchAllProducts)
       .get('/new_arrivals',fetchNewArrivals)
       .get('/bestSellers',fetchBestSellers)
+      .get('/search',searchItem)
       .get('/:id',fetchProductById)
-      .post('/bulk', insertAll);
-
+      .delete('/delete/:id',isAdmin,deleteProduct)
+      .post('/bulk', insertAll)
+      .patch('/update/:id',updateProduct)
+      
 exports.router = router;

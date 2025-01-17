@@ -1,27 +1,28 @@
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   FaTachometerAlt,
   FaUsers,
   FaMoneyCheckAlt,
-  FaChartBar,
-  FaCogs,
-  FaUsersCog,
   FaTasks,
   FaComments,
+  FaUsersCog,
+  FaShoppingCart,
 } from "react-icons/fa";
 import {
   FiPlusCircle,
   FiEdit,
   FiTrash2,
-  FiUserPlus,
   FiUserMinus,
 } from "react-icons/fi";
-import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logoutUserAsync } from "../../features/Auth/authSlice";
+import { MdOutlineAddShoppingCart } from "react-icons/md";
+
 
 const Navbar = () => {
   const [operationsSubmenuOpen, setOperationsSubmenuOpen] = useState(false);
+  const [ordersSubmenuOpen, setOrdersSubmenuOpen] = useState(false); // State for Orders submenu
 
   const dispatch = useDispatch();
 
@@ -32,19 +33,13 @@ const Navbar = () => {
 
   const linkBaseStyle =
     "flex items-center cursor-pointer hover:bg-red-700 p-2 rounded transition-all";
-    const activeLinkStyle = "border-b-4 border-[#db444] inline-block text-white"; // Active link with underline
-    const inactiveLinkStyle = "text-gray-300"; // Inactive style for links
+  const activeLinkStyle = "border-b-4 border-[#db444] inline-block text-white";
+  const inactiveLinkStyle = "text-gray-300";
 
   return (
     <div className="h-full w-full p-4 z-40 overflow-y-auto">
       <div className="flex items-center mb-6">
-        <img
-          src="/images/logo.png"
-          className="w-40"
-          alt="Logo"
-          // className="rounded-full w-10 h-10 mr-3 sm:w-12 sm:h-12"
-        />
-        {/* <h1 className="text-xl sm:text-4xl font-black text-white">shopZen</h1> */}
+        <img src="/images/logo.png" className="w-40" alt="Logo" />
       </div>
       <ul className="space-y-4">
         {/* Dashboard */}
@@ -59,16 +54,40 @@ const Navbar = () => {
           </NavLink>
         </li>
 
-        {/* Leads */}
+        {/* Orders */}
         <li>
-          <NavLink
-            to="/admin/leads"
-            className={({ isActive }) =>
-              `${linkBaseStyle} ${isActive ? activeLinkStyle : inactiveLinkStyle}`
-            }
+          <div
+            onClick={() => setOrdersSubmenuOpen(!ordersSubmenuOpen)}
+            className={`${linkBaseStyle} cursor-pointer ${
+              ordersSubmenuOpen ? activeLinkStyle : inactiveLinkStyle
+            }`}
           >
-            <FaUsers className="mr-2" /> Leads
-          </NavLink>
+            <FaUsers className="mr-2" /> Orders
+          </div>
+          {ordersSubmenuOpen && (
+            <ul className="pl-6 space-y-2">
+              <li>
+                <NavLink
+                  to="/admin/orders/pending"
+                  className={({ isActive }) =>
+                    `${linkBaseStyle} ${isActive ? activeLinkStyle : inactiveLinkStyle}`
+                  }
+                >
+                <MdOutlineAddShoppingCart className="mr-2" />  Pending Orders
+                </NavLink>
+              </li>
+              <li>
+                <NavLink
+                  to="/admin/orders/received"
+                  className={({ isActive }) =>
+                    `${linkBaseStyle} ${isActive ? activeLinkStyle : inactiveLinkStyle}`
+                  }
+                >
+                  <FaShoppingCart className="mr-2"/>   Completed Orders
+                </NavLink>
+              </li>
+            </ul>
+          )}
         </li>
 
         {/* Transactions */}
@@ -83,7 +102,7 @@ const Navbar = () => {
           </NavLink>
         </li>
 
-        {/* Operations Menu */}
+        {/* Operations */}
         <li>
           <div
             onClick={() => setOperationsSubmenuOpen(!operationsSubmenuOpen)}
@@ -105,7 +124,7 @@ const Navbar = () => {
                   <FiPlusCircle className="mr-2" /> Add Product
                 </NavLink>
               </li>
-              <li> 
+              <li>
                 <NavLink
                   to="/admin/operations/product-list"
                   className={({ isActive }) =>
@@ -113,26 +132,6 @@ const Navbar = () => {
                   }
                 >
                   <FiEdit className="mr-2" /> Product List
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/admin/operations/edit-product"
-                  className={({ isActive }) =>
-                    `${linkBaseStyle} ${isActive ? activeLinkStyle : inactiveLinkStyle}`
-                  }
-                >
-                  <FiEdit className="mr-2" /> Edit Product
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/admin/operations/delete-product"
-                  className={({ isActive }) =>
-                    `${linkBaseStyle} ${isActive ? activeLinkStyle : inactiveLinkStyle}`
-                  }
-                >
-                  <FiTrash2 className="mr-2" /> Delete Product
                 </NavLink>
               </li>
               <li>
@@ -153,16 +152,6 @@ const Navbar = () => {
                   }
                 >
                   <FiTrash2 className="mr-2" /> Add Category
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/admin/operations/add-user"
-                  className={({ isActive }) =>
-                    `${linkBaseStyle} ${isActive ? activeLinkStyle : inactiveLinkStyle}`
-                  }
-                >
-                  <FiUserPlus className="mr-2" /> Add User
                 </NavLink>
               </li>
               <li>

@@ -31,6 +31,8 @@ import CreateBrandForm from "./page/Admin/operations/CreateBrandForm";
 import CreateCategoryForm from "./page/Admin/operations/CreateCategoryForm";
 import EditProductForm from "./page/Admin/operations/EditProductForm";
 import ProductListWithActions from "./page/Admin/ProductListWithActions";
+import Pending from "./page/Admin/Orders/Pending";
+import Received from "./page/Admin/Orders/Received";
 
 const router = createBrowserRouter([
   {
@@ -60,7 +62,9 @@ const router = createBrowserRouter([
           { path: "operations/add-brand", element: <ProtectAdmin><CreateBrandForm></CreateBrandForm></ProtectAdmin> },
           { path: "operations/add-category", element: <ProtectAdmin><CreateCategoryForm></CreateCategoryForm></ProtectAdmin> },
           { path: "operations/product-list", element: <ProtectAdmin><ProductListWithActions></ProductListWithActions></ProtectAdmin> },
-          { path: "operations/edit-product", element: <ProtectAdmin><EditProductForm></EditProductForm></ProtectAdmin> },
+          { path: "operations/edit-product/:p_id", element: <ProtectAdmin><EditProductForm></EditProductForm></ProtectAdmin> },
+          { path: "orders/pending", element: <ProtectAdmin><Pending></Pending></ProtectAdmin> },
+          { path: "orders/received", element: <ProtectAdmin><Received></Received></ProtectAdmin> },
 
         ],
       },
@@ -85,7 +89,7 @@ function App() {
 
     async function checkSession() {
       try {
-        const response = await fetch("http://localhost:4040/auth/check", {
+        const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/check`, {
           credentials: "include",
         });
         if (response.ok) {
