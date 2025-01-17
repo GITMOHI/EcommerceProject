@@ -36,13 +36,17 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: 'mongodb+srv://mohi:mohi1234@cluster0.becc4nn.mongodb.net/shopZen',
-      ttl: 2 * 60 * 60
+      ttl: 2 * 60 * 60, // Time to live for session in MongoDB
     }),
     cookie: {
-      maxAge: 2 * 60 * 60 * 1000 + 4 * 60 * 1000
+      maxAge: 2 * 60 * 60 * 1000 + 4 * 60 * 1000, // 2 hours and 4 minutes
+      secure: process.env.NODE_ENV === 'production', // Only use secure cookies in production
+      httpOnly: true, // Prevents JavaScript access to the cookie
+      sameSite: 'strict' // Ensures cookies are sent only for same-origin requests
     }
   })
 );
+
 
 app.use(passport.initialize());
 app.use(passport.session());

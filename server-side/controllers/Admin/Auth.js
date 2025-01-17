@@ -24,6 +24,7 @@ exports.loginAdmin = async (req, res) => {
         }
         const { _id, password, ...userWithoutPassword } = user.toObject();
         userWithoutPassword.id = _id;
+        console.log('--', req.user);
         return res.json(userWithoutPassword);
       });
     } else {
