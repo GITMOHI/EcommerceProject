@@ -79,9 +79,9 @@ exports.createOrder = async (req, res) => {
             currency: 'BDT',
             tran_id: tran_id, // use unique tran_id for each api call
             success_url: `https://ecommerce-project-gamma-seven.vercel.app/orders/payment/success/${tran_id}`,
-            fail_url: `https://ecommerce-project-gamma-seven.vercel.app/orders/payment/failed/${tran_id}`,
-            cancel_url: 'https://ecommerce-project-gamma-seven.vercel.app/cancel',
-            ipn_url: 'https://ecommerce-project-gamma-seven.vercel.app/ipn',
+            fail_url: `http://localhost:4040/orders/payment/failed/${tran_id}`,
+            cancel_url: 'http://localhost:3030/cancel',
+            ipn_url: 'http://localhost:3030/ipn',
             shipping_method: 'Courier',
             product_name: 'Mixed',
             product_category: 'Mixed',
