@@ -29,20 +29,43 @@ app.use(bodyParser.json());
 
 
 
-app.use(
-  session({
-    secret: "keyboard cat",
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({
-      mongoUrl: 'mongodb+srv://mohi:mohi1234@cluster0.becc4nn.mongodb.net/shopZen',
-      ttl: 2 * 60 * 60
-    }),
-    cookie: {
-      maxAge: 2 * 60 * 60 * 1000 + 4 * 60 * 1000
-    }
-  })
-);
+//-------------------------
+ const store = MongoStore.create({
+  mongoUrl: 'mongodb+srv://mohi:mohi1234@cluster0.becc4nn.mongodb.net/shopZen',
+  ttl: 2 * 60 * 60, // 2 hours
+});
+
+store.on('error', (error) => {
+  console.error('MongoStore error:', error);
+});
+
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false,
+  store: store,
+  cookie: {
+    maxAge: 2 * 60 * 60 * 1000 + 4 * 60 * 1000,
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'strict',
+  }
+}));
+
+// app.use(
+//   session({
+//     secret: "keyboard cat",
+//     resave: false,
+//     saveUninitialized: false,
+//     store: MongoStore.create({
+//       mongoUrl: 'mongodb+srv://mohi:mohi1234@cluster0.becc4nn.mongodb.net/shopZen',
+//       ttl: 2 * 60 * 60
+//     }),
+//     cookie: {
+//       maxAge: 2 * 60 * 60 * 1000 + 4 * 60 * 1000
+//     }
+//   })
+// );
 
 app.use(passport.initialize());
 app.use(passport.session());
