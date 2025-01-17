@@ -19,7 +19,7 @@ const PORT = 4040;
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://ecommerce-project-a7a1h76we-gitmohis-projects.vercel.app'
+    'https://ecommerce-project-a7a1h76we-gitmohis-projects.vercel.app/'
   ],
   credentials: true, // Allow credentials (cookies, authorization headers, etc.)
 }));
