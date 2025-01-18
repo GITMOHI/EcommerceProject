@@ -33,6 +33,7 @@ import EditProductForm from "./page/Admin/operations/EditProductForm";
 import ProductListWithActions from "./page/Admin/ProductListWithActions";
 import Pending from "./page/Admin/Orders/Pending";
 import Received from "./page/Admin/Orders/Received";
+import ContactPage from "./page/ContactPage";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,7 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <HomePage /> },
       { path: "/about", element: <AboutPage /> },
+      { path: "/contact", element: <ContactPage /> },
       { path: "/products", element: <Products /> },
       { path: "/products/:id", element: <ProductDetails /> },
       { path: "/login", element: <LoginPage /> },
